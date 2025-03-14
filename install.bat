@@ -32,25 +32,10 @@ python manage.py migrate
 
 REM Collect static files
 echo.
+echo Collecting static files...
+python manage.py collectstatic --noinput
+
+echo.
 python manage.py runserver
-echo.
-
-
-echo.
-echo Installation completed successfully!
-echo.
-echo To start using the application:
-echo.
-echo 1. Create an admin account with:
-echo    venv\Scripts\python manage.py createsuperuser
-echo.
-echo 2. Start the development server with:
-echo    venv\Scripts\python manage.py runserver
-echo.
-echo Once the server is running, access the application at:
-echo http://127.0.0.1:8000/
-echo.
-echo Note: Always activate the virtual environment before running commands:
-echo    venv\Scripts\activate
 echo.
 pause
