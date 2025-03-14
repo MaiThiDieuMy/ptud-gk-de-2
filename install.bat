@@ -1,80 +1,40 @@
 @echo off
-echo Starting Task Manager Application installation...
-echo.
+setlocal
 
-REM Check if Python is installed and get its path
-where python > nul 2>&1
-if %errorlevel% neq 0 (
-    echo Python is not installed or not in PATH! Please install Python 3.x and try again.
-    pause
-    exit /b 1
-)
+echo 🚀 Đang khởi động Django Project...
 
-REM Create virtual environment if it doesn't exist
-if not exist "venv" (
-    echo Creating virtual environment...
+:: Kiểm tra và tạo virtual environment nếu chưa có
+if not exist "venv\" (
+    echo 🛠️ Đang tạo môi trường ảo (venv)...
     python -m venv venv
-    if %errorlevel% neq 0 (
-        echo Failed to create virtual environment!
-        pause
-        exit /b 1
-    )
 )
 
-REM Activate virtual environment
-echo Activating virtual environment...
-call venv\Scripts\activate.bat
-if %errorlevel% neq 0 (
-    echo Failed to activate virtual environment!
-    pause
-    exit /b 1
+:: Kích hoạt môi trường ảo
+echo 🔁 Kích hoạt môi trường ảo...
+call venv\Scripts\activate
+
+:: Cập nhật pip
+echo 📦 Đang cập nhật pip...
+python -m pip install --upgrade pip
+
+:: Cài đặt các thư viện từ requirements.txt nếu có
+if exist "requirements.txt" (
+    echo 📂 Đang cài đặt các thư viện...
+    pip install -r requirements.txt
+) else (
+    echo ⚠️ Không tìm thấy requirements.txt! Đang cài đặt các thư viện cơ bản...
+    pip install django djangorestframework
 )
 
-REM Verify virtual environment activation
-venv\Scripts\python --version > nul 2>&1
-if %errorlevel% neq 0 (
-    echo Virtual environment activation failed!
-    pause
-    exit /b 1
-)
-
-REM Install requirements
-echo Installing required packages...
-venv\Scripts\pip install -r requirements.txt
-if %errorlevel% neq 0 (
-    echo Failed to install required packages!
-    pause
-    exit /b 1
-)
-
-REM Run migrations
-echo Running database migrations...
+:: Chạy migrations
+echo 🛠️ Chạy migrate...
 python manage.py migrate
 
-REM Create static files directory and collect static files
-echo Collecting static files...
-python manage.py collectstatic --noinput
+:: Khởi động server Django
+echo 🌍 Khởi động server Django...
+python manage.py runserver
 
-echo.
-echo Installation complete!
-echo.
-echo Next steps:
-echo 1. Activate the virtual environment:
-echo    venv\Scripts\activate
-echo.
-echo 2. Run database migrations:
-echo    python manage.py migrate
-echo.
-echo 3. Create static files:
-echo    python manage.py collectstatic
-echo.
-echo 4. Create an admin account (optional):
-echo    python manage.py createsuperuser
-echo.
-echo 5. Start the development server:
-echo    python manage.py runserver
-echo.
-echo Once the server is running, access the application at:
-echo http://127.0.0.1:8000/
-echo.
-pause 
+echo ✅ Django đã sẵn sàng tại: http://127.0.0.1:8000/
+
+endlocal
+pause
