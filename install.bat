@@ -22,7 +22,7 @@ call venv\Scripts\activate.bat
 
 REM Install required packages
 echo Installing required packages...
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 
 echo.
@@ -41,4 +41,4 @@ echo.
 echo Once the server is running, access the application at:
 echo http://127.0.0.1:8000/
 echo.
-pause 
+pause
