@@ -111,9 +111,6 @@ echo.
 echo 3. Collect static files with:
 venv\Scripts\python manage.py collectstatic
 echo.
-echo 4. Create an admin account (optional) with:
-venv\Scripts\python manage.py createsuperuser
-echo.
 echo 5. Start the development server with:
 python manage.py runserver
 
