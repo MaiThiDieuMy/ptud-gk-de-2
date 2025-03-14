@@ -46,20 +46,27 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM Upgrade pip to latest version
-echo Upgrading pip to latest version...
-venv\Scripts\python -m pip install --upgrade pip
+REM Upgrade pip and install build dependencies
+echo Upgrading pip and installing build dependencies...
+venv\Scripts\python -m pip install --upgrade pip setuptools wheel
 if %errorlevel% neq 0 (
-    echo Warning: Failed to upgrade pip, continuing with installation...
+    echo Warning: Failed to upgrade pip or install build dependencies.
+    echo This might cause issues with package installation.
+    pause
 )
 
 REM Install Pillow first as it's a critical dependency
 echo Installing Pillow...
-venv\Scripts\pip install Pillow==10.1.0
+venv\Scripts\pip install --only-binary :all: Pillow==10.1.0
 if %errorlevel% neq 0 (
-    echo Error: Failed to install Pillow! This is required for the application.
-    pause
-    exit /b 1
+    echo Trying alternative Pillow installation method...
+    venv\Scripts\pip install --no-cache-dir Pillow==10.1.0
+    if %errorlevel% neq 0 (
+        echo Error: Failed to install Pillow! This is required for the application.
+        echo Please ensure you have Microsoft Visual C++ Build Tools installed.
+        pause
+        exit /b 1
+    )
 )
 
 REM Install Django next as it's the main framework
