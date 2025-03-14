@@ -103,21 +103,18 @@ echo.
 echo Next steps to set up the application:
 echo.
 echo 1. Ensure you are in the virtual environment:
-echo    venv\Scripts\activate
+venv\Scripts\activate
 echo.
 echo 2. Run database migrations with:
-echo    venv\Scripts\python manage.py migrate
+venv\Scripts\python manage.py migrate
 echo.
 echo 3. Collect static files with:
-echo    venv\Scripts\python manage.py collectstatic
+venv\Scripts\python manage.py collectstatic
 echo.
 echo 4. Create an admin account (optional) with:
-echo    venv\Scripts\python manage.py createsuperuser
+venv\Scripts\python manage.py createsuperuser
 echo.
 echo 5. Start the development server with:
-echo    venv\Scripts\python manage.py runserver
-echo.
-echo Once the server is running, access the application at:
-echo http://127.0.0.1:8000/
-echo.
+python manage.py runserver
+
 pause 
