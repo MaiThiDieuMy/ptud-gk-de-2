@@ -23,18 +23,15 @@ wheels/
 # Django
 *.log
 local_settings.py
-db.sqlite3
+
 db.sqlite3-journal
 
 # Bỏ ignore thư mục media để push lên GitHub
-# (chỉ giữ lại trong Git nếu nó không quá lớn)
-!media/
 
-# Virtual Environment (Không nên push)
-venv/
-ENV/
-env/
-.env
+
+
+
+
 
 # IDE
 .idea/
@@ -42,8 +39,6 @@ env/
 *.swp
 *.swo
 
-# Static files
-staticfiles/
 
 # Misc
 .DS_Store
