@@ -32,18 +32,12 @@ REM Create static files directory and collect static files
 echo Collecting static files...
 python manage.py collectstatic --noinput
 
-REM Prompt for superuser creation
 echo.
-echo Would you like to create a superuser account? (Y/N)
-set /p create_superuser=
-if /i "%create_superuser%"=="Y" (
-    python manage.py createsuperuser
-)
-
-REM Start the development server
+echo Installation complete!
 echo.
-echo Installation complete! Starting the development server...
-echo You can access the application at http://127.0.0.1:8000/
-echo Press Ctrl+C to stop the server
+echo To start the application:
+echo 1. Activate the virtual environment: venv\Scripts\activate
+echo 2. Run the server: python manage.py runserver
+echo 3. Access the application at http://127.0.0.1:8000/
 echo.
-python manage.py runserver 
+pause 
