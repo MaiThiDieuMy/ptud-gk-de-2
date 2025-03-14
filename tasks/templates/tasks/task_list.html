@@ -1,0 +1,184 @@
+{% extends 'tasks/base.html' %}
+
+{% block content %}
+<style>
+    .task-card {
+        margin-bottom: 1rem;
+    }
+    .task-card.overdue {
+        border: 2px solid #dc3545;
+    }
+    .task-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.5rem;
+    }
+    .button-group {
+        margin-top: 0.5rem;
+    }
+    .status-group {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .filter-buttons {
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .filter-buttons .btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .filter-buttons .btn-outline-primary.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+    .filter-buttons .btn-outline-info.active {
+        background-color: #0dcaf0;
+        color: black;
+    }
+    .filter-buttons .btn-outline-danger.active {
+        background-color: #dc3545;
+        color: white;
+    }
+    .page-header {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        padding: 1.5rem 0;
+    }
+    .page-header h2 {
+        font-size: 3rem;
+        margin: 0;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+    .header-container {
+        background-color: #f8f9fa;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .avatar-img {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #fff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .create-task-btn {
+        padding: 1rem 2rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="header-container">
+            <div class="header-content">
+                <div class="page-header">
+                    {% if user.userprofile.avatar %}
+                        <img src="{{ user.userprofile.avatar.url }}" alt="Avatar" class="avatar-img">
+                    {% elif user.userprofile.avatar_url %}
+                        <img src="{{ user.userprofile.avatar_url }}" alt="Avatar" class="avatar-img">
+                    {% endif %}
+                    <h2>My Tasks</h2>
+                </div>
+                <a href="{% url 'task_create' %}" class="btn btn-primary btn-lg create-task-btn">Create New Task</a>
+            </div>
+        </div>
+
+        <div class="filter-buttons">
+            <a href="{% url 'task_list' %}?filter=all" 
+               class="btn {% if current_filter == 'all' %}active{% else %}btn-outline-primary{% endif %}">
+                <i class="fas fa-tasks"></i> All Tasks
+            </a>
+            <a href="{% url 'task_list' %}?filter=upcoming" 
+               class="btn {% if current_filter == 'upcoming' %}active{% else %}btn-outline-info{% endif %}">
+                <i class="fas fa-calendar-alt"></i> Upcoming Tasks 
+                {% if upcoming_count > 0 %}<span class="badge bg-info text-dark">{{ upcoming_count }}</span>{% endif %}
+            </a>
+            <a href="{% url 'task_list' %}?filter=overdue" 
+               class="btn {% if current_filter == 'overdue' %}active{% else %}btn-outline-danger{% endif %}">
+                <i class="fas fa-exclamation-circle"></i> Overdue Tasks 
+                {% if overdue_count > 0 %}<span class="badge bg-danger">{{ overdue_count }}</span>{% endif %}
+            </a>
+        </div>
+
+        {% if overdue_count > 0 and current_filter == 'all' %}
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            You have {{ overdue_count }} overdue task{{ overdue_count|pluralize }}!
+        </div>
+        {% endif %}
+
+        {% for task in tasks %}
+        <div class="card task-card {% if task.is_overdue %}overdue{% endif %}">
+            <div class="card-body">
+                <h5 class="card-title">{{ task.title }}</h5>
+                <p class="card-text">{{ task.description }}</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Status:</strong> 
+                            {% if task.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% else %}
+                                <span class="badge bg-primary">{{ task.get_status_display }}</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Created:</strong> {{ task.created_time|date:"F j, Y, g:i a" }}</p>
+                        <p><strong>Due Date:</strong> {{ task.due_date|date:"F j, Y, g:i a" }}</p>
+                        {% if task.finished_time %}
+                        <p><strong>Completed At:</strong> {{ task.finished_time|date:"F j, Y, g:i a" }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="task-actions">
+                            <div class="status-group">
+                                <form method="post" action="{% url 'task_toggle_complete' task.pk %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="task-{{ task.pk }}"
+                                               {% if task.status == 'completed' %}checked{% endif %}
+                                               onchange="this.form.submit()">
+                                        <label class="form-check-label" for="task-{{ task.pk }}">
+                                            Mark as Complete
+                                        </label>
+                                    </div>
+                                </form>
+                                {% if task.is_overdue %}
+                                <span class="badge bg-danger">Overdue</span>
+                                {% endif %}
+                            </div>
+                            <div class="button-group">
+                                <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                                <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">
+            No tasks found. Create your first task!
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 
