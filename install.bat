@@ -32,8 +32,9 @@ python manage.py migrate
 
 REM Collect static files
 echo.
-echo Collecting static files...
-python manage.py collectstatic --noinput
+python manage.py runserver
+echo.
+
 
 echo.
 echo Installation completed successfully!
