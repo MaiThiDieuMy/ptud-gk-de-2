@@ -57,10 +57,10 @@ if %errorlevel% neq 0 (
 
 REM Install Pillow first as it's a critical dependency
 echo Installing Pillow...
-venv\Scripts\pip install --only-binary :all: Pillow==10.1.0
+venv\Scripts\pip install --only-binary :all: Pillow==10.4.0
 if %errorlevel% neq 0 (
     echo Trying alternative Pillow installation method...
-    venv\Scripts\pip install --no-cache-dir Pillow==10.1.0
+    venv\Scripts\pip install --no-cache-dir Pillow==10.4.0
     if %errorlevel% neq 0 (
         echo Error: Failed to install Pillow! This is required for the application.
         echo Please ensure you have Microsoft Visual C++ Build Tools installed.
