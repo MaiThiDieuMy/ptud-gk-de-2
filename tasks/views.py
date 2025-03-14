@@ -5,7 +5,7 @@ from django.utils import timezone
 from .models import Task, UserProfile
 from .forms import TaskForm, UserProfileForm, UserRegistrationForm
 from django.contrib.auth import login, logout
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 import requests
 from django.conf import settings
 from django.db.models import Q
@@ -138,11 +138,13 @@ class CustomLoginView(LoginView):
             return redirect('task_list')
         return super().dispatch(request, *args, **kwargs)
 
-def logout_view(request):
-    if request.user.is_authenticated:
-        logout(request)
-        messages.success(request, 'You have been successfully logged out.')
-    return redirect('login')
+class CustomLogoutView(LogoutView):
+    next_page = 'login'
+    
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.success(request, 'You have been successfully logged out.')
+        return super().dispatch(request, *args, **kwargs)
 
 @login_required
 def task_toggle_complete(request, pk):

@@ -87,7 +87,10 @@
                             {% elif user.userprofile.avatar_url %}
                                 <img src="{{ user.userprofile.avatar_url }}" alt="Avatar" class="avatar-img-sm">
                             {% endif %}
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link" style="border: none; padding: 0; background: none;">Logout</button>
+                            </form>
                         </li>
                     {% else %}
                         <li class="nav-item">
