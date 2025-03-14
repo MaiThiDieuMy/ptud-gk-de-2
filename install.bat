@@ -53,15 +53,31 @@ if %errorlevel% neq 0 (
     echo Warning: Failed to upgrade pip, continuing with installation...
 )
 
-REM Install requirements one by one to better handle errors
-echo Installing required packages...
-for /F "tokens=*" %%A in (requirements.txt) do (
-    echo Installing %%A...
-    venv\Scripts\pip install %%A
-    if %errorlevel% neq 0 (
-        echo Warning: Failed to install %%A, continuing with other packages...
-    )
+REM Install Pillow first as it's a critical dependency
+echo Installing Pillow...
+venv\Scripts\pip install Pillow==10.1.0
+if %errorlevel% neq 0 (
+    echo Error: Failed to install Pillow! This is required for the application.
+    pause
+    exit /b 1
 )
+
+REM Install Django next as it's the main framework
+echo Installing Django...
+venv\Scripts\pip install Django==5.0
+if %errorlevel% neq 0 (
+    echo Error: Failed to install Django! This is required for the application.
+    pause
+    exit /b 1
+)
+
+REM Install remaining packages
+echo Installing remaining packages...
+venv\Scripts\pip install django-crispy-forms==2.1
+venv\Scripts\pip install crispy-bootstrap5==2023.10
+venv\Scripts\pip install python-dotenv==1.0.0
+venv\Scripts\pip install requests==2.31.0
+venv\Scripts\pip install whitenoise==6.6.0
 
 REM Run migrations
 echo Running database migrations...
@@ -79,7 +95,7 @@ echo you may need to manually install those packages.
 echo.
 echo Next steps to set up the application:
 echo.
-echo 1. Activate the virtual environment with:
+echo 1. Ensure you are in the virtual environment:
 echo    venv\Scripts\activate
 echo.
 echo 2. Run database migrations with:
