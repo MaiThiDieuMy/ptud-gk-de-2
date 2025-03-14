@@ -1,0 +1,70 @@
+{% extends 'tasks/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<style>
+    .avatar-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .avatar-preview {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #2c3e50;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+    .avatar-preview:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    .avatar-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    .btn-generate {
+        padding: 0.5rem 1.5rem;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Your Profile</h2>
+                <div class="avatar-container">
+                    {% if user.userprofile.avatar %}
+                        <img src="{{ user.userprofile.avatar.url }}" alt="Profile Avatar" class="avatar-preview">
+                    {% elif user.userprofile.avatar_url %}
+                        <img src="{{ user.userprofile.avatar_url }}" alt="Generated Avatar" class="avatar-preview">
+                    {% else %}
+                        <img src="https://avatar-placeholder.iran.liara.run/200x200" alt="Default Avatar" class="avatar-preview">
+                    {% endif %}
+                    <div class="avatar-actions">
+                        <a href="{% url 'generate_avatar' %}" class="btn btn-primary btn-generate">
+                            <i class="fas fa-sync-alt"></i> Generate Random Avatar
+                        </a>
+                    </div>
+                    <p class="text-muted">Click the button to generate a new random avatar</p>
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">Save Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %} 
