@@ -1,6 +1,7 @@
+=======
 # Task Manager Application
 
-A Django-based task management system that allows users to manage their tasks with features like task status tracking, creation time, and completion time. The application supports two types of users: administrators and regular users.
+Một hệ thống quản lý tác vụ dựa trên Django cho phép người dùng quản lý tác vụ của họ bằng các tính năng như theo dõi trạng thái tác vụ, thời gian tạo và thời gian hoàn thành. Ứng dụng hỗ trợ hai loại người dùng: quản trị viên và người dùng thông thường.
 
 ## Features
 - User authentication (Admin and Regular users)
@@ -11,12 +12,13 @@ A Django-based task management system that allows users to manage their tasks wi
 - Single Column Card Layout
 
 ## Personal Information
-- Student ID: [Your Student ID]
-- Name: [Your Name]
-- Class: [Your Class]
+- STT: 44
+- MSSV: 22707221
+- Name: Mai Thị Diệu My
+- Class: KHDL18A
 
 ## Installation Instructions
-
+### Cách 1
 1. Clone the repository:
 ```bash
 git clone https://github.com/yourusername/ptud-gk-de-2.git
@@ -50,6 +52,12 @@ python manage.py runserver
 ```
 
 7. Access the application at http://127.0.0.1:8000/
+### Cách 2
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/ptud-gk-de-2.git
+```
+2. Nhấn vào chuột vào file install.bat
 
 ## Technologies Used
 - Python 3.x
@@ -57,3 +65,4 @@ python manage.py runserver
 - HTML5
 - CSS3
 - SQLite (default database) 
+>>>>>>> master
