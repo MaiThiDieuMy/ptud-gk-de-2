@@ -1,40 +1,86 @@
 @echo off
-setlocal
+echo Starting Task Manager Application installation...
+echo.
 
-echo 🚀 Đang khởi động Django Project...
+REM Check if Python is installed and get its path
+where python > nul 2>&1
+if %errorlevel% neq 0 (
+    echo Python is not installed or not in PATH! Please install Python 3.x and try again.
+    pause
+    exit /b 1
+)
 
-:: Kiểm tra và tạo virtual environment nếu chưa có
-if not exist "venv\" (
-    echo 🛠️ Đang tạo môi trường ảo (venv)...
+REM Check if requirements.txt exists
+if not exist "requirements.txt" (
+    echo Error: requirements.txt not found!
+    echo Please ensure you are in the correct directory.
+    pause
+    exit /b 1
+)
+
+REM Create virtual environment if it doesn't exist
+if not exist "venv" (
+    echo Creating virtual environment...
     python -m venv venv
+    if %errorlevel% neq 0 (
+        echo Failed to create virtual environment!
+        pause
+        exit /b 1
+    )
 )
 
-:: Kích hoạt môi trường ảo
-echo 🔁 Kích hoạt môi trường ảo...
-call venv\Scripts\activate
-
-:: Cập nhật pip
-echo 📦 Đang cập nhật pip...
-python -m pip install --upgrade pip
-
-:: Cài đặt các thư viện từ requirements.txt nếu có
-if exist "requirements.txt" (
-    echo 📂 Đang cài đặt các thư viện...
-    pip install -r requirements.txt
-) else (
-    echo ⚠️ Không tìm thấy requirements.txt! Đang cài đặt các thư viện cơ bản...
-    pip install django djangorestframework
+REM Activate virtual environment
+echo Activating virtual environment...
+call venv\Scripts\activate.bat
+if %errorlevel% neq 0 (
+    echo Failed to activate virtual environment!
+    pause
+    exit /b 1
 )
 
-:: Chạy migrations
-echo 🛠️ Chạy migrate...
-python manage.py migrate
+REM Verify virtual environment activation
+venv\Scripts\python --version > nul 2>&1
+if %errorlevel% neq 0 (
+    echo Virtual environment activation failed!
+    pause
+    exit /b 1
+)
 
-:: Khởi động server Django
-echo 🌍 Khởi động server Django...
-python manage.py runserver
+REM Install requirements
+echo Installing required packages...
+venv\Scripts\pip install -r requirements.txt
+if %errorlevel% neq 0 (
+    echo Failed to install required packages!
+    pause
+    exit /b 1
+)
 
-echo ✅ Django đã sẵn sàng tại: http://127.0.0.1:8000/
+REM Run migrations
+echo Running database migrations...
+venv\Scripts\python manage.py migrate
 
-endlocal
-pause
+REM Create static files directory and collect static files
+echo Collecting static files...
+venv\Scripts\python manage.py collectstatic --noinput
+
+echo.
+echo Installation completed successfully!
+echo.
+echo Next steps to set up the application:
+echo.
+echo 1. Activate the virtual environment with:
+echo    venv\Scripts\activate
+echo.
+echo 2. Run database migrations with:
+echo    venv\Scripts\python manage.py migrate
+echo.
+echo 3. Collect static files with:
+echo    venv\Scripts\python manage.py collectstatic
+echo.
+echo 5. Start the development server with:
+echo    venv\Scripts\python manage.py runserver
+echo.
+echo Once the server is running, access the application at:
+echo http://127.0.0.1:8000/
+echo.
+pause 
