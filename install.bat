@@ -112,6 +112,6 @@ echo 3. Collect static files with:
 venv\Scripts\python manage.py collectstatic
 echo.
 echo 5. Start the development server with:
-python manage.py runserver
+venv\Scripts\python manage.py runserver
 
 pause 
