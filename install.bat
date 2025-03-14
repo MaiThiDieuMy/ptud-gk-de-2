@@ -10,6 +10,14 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+REM Check if requirements.txt exists
+if not exist "requirements.txt" (
+    echo Error: requirements.txt not found!
+    echo Please ensure you are in the correct directory.
+    pause
+    exit /b 1
+)
+
 REM Create virtual environment if it doesn't exist
 if not exist "venv" (
     echo Creating virtual environment...
@@ -38,41 +46,53 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-REM Install requirements
-echo Installing required packages...
-venv\Scripts\pip install -r requirements.txt
+REM Upgrade pip to latest version
+echo Upgrading pip to latest version...
+venv\Scripts\python -m pip install --upgrade pip
 if %errorlevel% neq 0 (
-    echo Failed to install required packages!
-    pause
-    exit /b 1
+    echo Warning: Failed to upgrade pip, continuing with installation...
+)
+
+REM Install requirements one by one to better handle errors
+echo Installing required packages...
+for /F "tokens=*" %%A in (requirements.txt) do (
+    echo Installing %%A...
+    venv\Scripts\pip install %%A
+    if %errorlevel% neq 0 (
+        echo Warning: Failed to install %%A, continuing with other packages...
+    )
 )
 
 REM Run migrations
 echo Running database migrations...
-python manage.py migrate
+venv\Scripts\python manage.py migrate
 
 REM Create static files directory and collect static files
 echo Collecting static files...
-python manage.py collectstatic --noinput
+venv\Scripts\python manage.py collectstatic --noinput
 
 echo.
-echo Installation complete!
+echo Installation completed!
 echo.
-echo Next steps:
-echo 1. Activate the virtual environment:
+echo Note: If there were any package installation warnings above,
+echo you may need to manually install those packages.
+echo.
+echo Next steps to set up the application:
+echo.
+echo 1. Activate the virtual environment with:
 echo    venv\Scripts\activate
 echo.
-echo 2. Run database migrations:
-echo    python manage.py migrate
+echo 2. Run database migrations with:
+echo    venv\Scripts\python manage.py migrate
 echo.
-echo 3. Create static files:
-echo    python manage.py collectstatic
+echo 3. Collect static files with:
+echo    venv\Scripts\python manage.py collectstatic
 echo.
-echo 4. Create an admin account (optional):
-echo    python manage.py createsuperuser
+echo 4. Create an admin account (optional) with:
+echo    venv\Scripts\python manage.py createsuperuser
 echo.
-echo 5. Start the development server:
-echo    python manage.py runserver
+echo 5. Start the development server with:
+echo    venv\Scripts\python manage.py runserver
 echo.
 echo Once the server is running, access the application at:
 echo http://127.0.0.1:8000/
